@@ -5,9 +5,12 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\FontController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/fonts/BYekan.woff2', [FontController::class, 'byekan'])->name('font.byekan');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/shop', [CatalogController::class, 'index'])->name('catalog.index');
