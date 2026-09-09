@@ -1,0 +1,66 @@
+@extends('layouts.app')
+
+@section('title', ($product->meta_title ?: $product->name).' | خانه فرش')
+@section('meta_description', $product->meta_description ?: ($product->short_description ?: 'مشاهده مشخصات، ابعاد، جنس و قیمت '.$product->name))
+@section('canonical', route('products.show', $product))
+@section('og_type', 'product')
+@section('og_image', url($product->primary_image))
+
+@section('content')
+<section class="product-page container">
+    <nav class="breadcrumbs" aria-label="مسیر صفحه"><a href="{{ route('home') }}">خانه</a> / <a href="{{ route('catalog.index') }}">فروشگاه</a> / <span>{{ $product->category?->name }}</span> / <b>{{ $product->name }}</b></nav>
+
+    <div class="product-layout">
+        <div>
+            <div class="product-gallery">
+                @php($images = collect($product->images ?: [$product->primary_image])->filter()->values())
+                @foreach($images->take(5) as $image)
+                    <figure><img src="{{ $image }}" width="900" height="900" @if(!$loop->first) loading="lazy" @endif alt="{{ $product->name }} - تصویر {{ $loop->iteration }}"></figure>
+                @endforeach
+            </div>
+
+            <div class="experience" style="margin-top:44px;padding:28px">
+                <div class="rug-peel-stage" data-rug-peel style="height:560px;max-height:none">
+                    <div class="rug-under pattern-3"><span>طرح جایگزین</span></div>
+                    <div class="rug-top pattern-1" data-rug-top><span>{{ $product->name }}</span></div>
+                    <button type="button" class="rug-handle" data-rug-handle aria-label="کشیدن گوشه قالی"><b>↙</b><small>گوشه را بکشید</small></button>
+                </div>
+            </div>
+        </div>
+
+        <aside class="product-info">
+            <span class="product-kicker">{{ $product->category?->name }} · {{ $product->sku }}</span>
+            <h1>{{ $product->name }}</h1>
+            <p class="product-desc">{{ $product->short_description ?: 'بافتی انتخاب‌شده برای فضاهای روشن و معاصر؛ با تمرکز بر کیفیت متریال، تناسب رنگ و دوام در استفاده روزمره.' }}</p>
+            <div class="price-line"><strong>{{ number_format($price) }}</strong><span>تومان</span></div>
+
+            <div class="product-specs">
+                <div><small>ابعاد</small><b>{{ $product->width && $product->height ? rtrim(rtrim($product->width,'0'),'.').' × '.rtrim(rtrim($product->height,'0'),'.').' سانتی‌متر' : 'قابل انتخاب' }}</b></div>
+                <div><small>جنس</small><b>{{ $product->material ?: 'درجه یک' }}</b></div>
+                <div><small>نوع بافت</small><b>{{ $product->weave ?: 'استاندارد ممتاز' }}</b></div>
+                <div><small>مبدأ</small><b>{{ $product->origin ?: 'ایران' }}</b></div>
+                <div><small>موجودی</small><b>{{ $product->stock > 0 ? $product->stock.' عدد' : 'ناموجود' }}</b></div>
+                <div><small>تراکم</small><b>{{ $product->density ?: '—' }}</b></div>
+            </div>
+
+            @if($product->stock > 0)
+                <form class="add-form" method="post" action="{{ route('cart.store', $product) }}">@csrf<input class="qty" type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" aria-label="تعداد"><button class="btn btn-primary" type="submit">افزودن به سبد خرید</button></form>
+            @else
+                <button class="btn btn-ghost" style="width:100%" disabled>فعلاً ناموجود</button>
+            @endif
+
+            <div class="trust-list"><span>✓ ضمانت اصالت و تطابق مشخصات</span><span>✓ بسته‌بندی و ارسال تخصصی</span><span>✓ پرداخت امن از طریق زرین‌پال</span><span>✓ پشتیبانی سفارش با پیامک کاوه‌نگار</span></div>
+
+            <div class="visualizer-card"><strong>این فرش در خانه شما چطور دیده می‌شود؟</strong><p>عکس فضای خود را برای مشاوره بفرستید تا نسبت ابعاد، نور و رنگ مبلمان بررسی شود.</p><a class="text-link" href="{{ route('home') }}#consultation">درخواست مشاوره ←</a></div>
+        </aside>
+    </div>
+
+    @if($related->isNotEmpty())
+        <div class="section" style="padding-bottom:0"><div class="section-heading"><div><span class="eyebrow">YOU MAY ALSO LIKE</span><h2>انتخاب‌های مشابه</h2></div></div><div class="product-grid">@foreach($related as $item)<article class="product-card"><a class="product-media" href="{{ route('products.show',$item) }}"><img src="{{ $item->primary_image }}" width="640" height="800" loading="lazy" alt="{{ $item->name }}"></a><div class="product-meta"><div><small>{{ $item->category?->name }}</small><h3>{{ $item->name }}</h3></div><strong>{{ number_format($item->final_price) }} <small>تومان</small></strong></div></article>@endforeach</div></div>
+    @endif
+</section>
+@endsection
+
+@push('structured-data')
+<script type="application/ld+json">{!! json_encode(['@context'=>'https://schema.org','@type'=>'Product','name'=>$product->name,'sku'=>$product->sku,'image'=>$images->map(fn($image)=>url($image))->all(),'description'=>$product->short_description,'offers'=>['@type'=>'Offer','priceCurrency'=>'IRR','price'=>$price*10,'availability'=>$product->stock>0?'https://schema.org/InStock':'https://schema.org/OutOfStock','url'=>route('products.show',$product)]], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
