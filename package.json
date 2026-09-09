@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.1.0",
+    "axios": "^1.11.0",
+    "concurrently": "^9.2.1",
+    "laravel-vite-plugin": "^2.0.1",
+    "vite": "^7.1.0"
+  }
+}
