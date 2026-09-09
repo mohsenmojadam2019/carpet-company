@@ -32,12 +32,24 @@ jobs:
         uses: actions/cache@v4
         with:
           path: vendor
-          key: ${{ runner.os }}-php84-${{ hashFiles('composer.lock') }}
+          key: ${{ runner.os }}-php84-${{ hashFiles('composer.lock', 'composer.json') }}
           restore-keys: |
             ${{ runner.os }}-php84-
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress
+        shell: bash
+        run: |
+          set -o pipefail
+          composer install --no-interaction --prefer-dist --no-progress 2>&1 | tee composer-install.log
+
+      - name: Upload Composer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: composer-diagnostics
+          path: composer-install.log
+          if-no-files-found: ignore
+          retention-days: 1
 
       - name: Prepare environment
         run: |
