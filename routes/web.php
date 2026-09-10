@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CouponController as AdminCouponController;
+use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DiscountRuleController as AdminDiscountRuleController;
 use App\Http\Controllers\Admin\MediaController as AdminMediaController;
@@ -32,12 +33,10 @@ Route::get('/shop',[CatalogController::class,'index'])->name('catalog.index');
 Route::get('/product/{product:slug}',[CatalogController::class,'show'])->name('products.show');
 Route::get('/projects',[ProjectController::class,'index'])->name('projects.index');
 Route::get('/projects/{project:slug}',[ProjectController::class,'show'])->name('projects.show');
-
 Route::get('/wishlist',[EngagementController::class,'wishlist'])->name('wishlist.index');
 Route::post('/wishlist/{product}',[EngagementController::class,'toggleWishlist'])->name('wishlist.toggle');
 Route::get('/compare',[EngagementController::class,'compare'])->name('compare.index');
 Route::post('/compare/{product}',[EngagementController::class,'toggleCompare'])->name('compare.toggle');
-
 Route::get('/cart',[CartController::class,'index'])->name('cart.index');
 Route::post('/cart/{product}',[CartController::class,'store'])->name('cart.store');
 Route::patch('/cart/{product}',[CartController::class,'update'])->name('cart.update');
@@ -58,6 +57,7 @@ Route::prefix('admin')->name('admin.')->group(function():void {
         Route::get('orders',[AdminOrderController::class,'index'])->name('orders.index');
         Route::get('orders/{order}',[AdminOrderController::class,'show'])->name('orders.show');
         Route::patch('orders/{order}',[AdminOrderController::class,'update'])->name('orders.update');
+        Route::get('customers',[AdminCustomerController::class,'index'])->name('customers.index');
         Route::resource('projects',AdminProjectController::class)->except('show');
         Route::resource('coupons',AdminCouponController::class)->except('show');
         Route::resource('discount-rules',AdminDiscountRuleController::class)->except('show');
