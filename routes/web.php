@@ -1,4 +1,82 @@
 <?php
-use App\Http\Controllers\Admin\AuthController as AdminAuthController; use App\Http\Controllers\Admin\CategoryController as AdminCategoryController; use App\Http\Controllers\Admin\CouponController as AdminCouponController; use App\Http\Controllers\Admin\DashboardController; use App\Http\Controllers\Admin\DiscountRuleController as AdminDiscountRuleController; use App\Http\Controllers\Admin\MediaController as AdminMediaController; use App\Http\Controllers\Admin\MenuItemController as AdminMenuItemController; use App\Http\Controllers\Admin\OrderController as AdminOrderController; use App\Http\Controllers\Admin\ProductController as AdminProductController; use App\Http\Controllers\Admin\ProjectController as AdminProjectController; use App\Http\Controllers\Admin\ReportController as AdminReportController; use App\Http\Controllers\Admin\RoleController as AdminRoleController; use App\Http\Controllers\Admin\SettingController as AdminSettingController; use App\Http\Controllers\Admin\UserController as AdminUserController; use App\Http\Controllers\CartController; use App\Http\Controllers\CatalogController; use App\Http\Controllers\CheckoutController; use App\Http\Controllers\FontController; use App\Http\Controllers\HomeController; use App\Http\Controllers\PaymentController; use App\Http\Controllers\ProjectController; use App\Http\Controllers\SitemapController; use Illuminate\Support\Facades\Route;
-Route::get('/fonts/BYekan.woff2',[FontController::class,'byekan'])->name('font.byekan'); Route::get('/sitemap.xml',SitemapController::class)->name('sitemap'); Route::get('/',[HomeController::class,'index'])->name('home'); Route::get('/shop',[CatalogController::class,'index'])->name('catalog.index'); Route::get('/product/{product:slug}',[CatalogController::class,'show'])->name('products.show'); Route::get('/projects',[ProjectController::class,'index'])->name('projects.index'); Route::get('/projects/{project:slug}',[ProjectController::class,'show'])->name('projects.show'); Route::get('/cart',[CartController::class,'index'])->name('cart.index'); Route::post('/cart/{product}',[CartController::class,'store'])->name('cart.store'); Route::patch('/cart/{product}',[CartController::class,'update'])->name('cart.update'); Route::delete('/cart/{product}',[CartController::class,'destroy'])->name('cart.destroy'); Route::post('/cart/coupon',[CartController::class,'coupon'])->name('cart.coupon'); Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout.index'); Route::post('/checkout',[CheckoutController::class,'store'])->name('checkout.store'); Route::get('/payment/zarinpal/callback',PaymentController::class)->name('payment.zarinpal.callback');
-Route::prefix('admin')->name('admin.')->group(function():void { Route::get('/login',[AdminAuthController::class,'create'])->name('login'); Route::post('/login',[AdminAuthController::class,'store'])->name('login.store'); Route::post('/logout',[AdminAuthController::class,'destroy'])->name('logout'); Route::middleware('admin')->group(function():void { Route::get('/',[DashboardController::class,'index'])->name('dashboard'); Route::resource('products',AdminProductController::class)->except('show'); Route::resource('categories',AdminCategoryController::class)->except('show'); Route::get('orders',[AdminOrderController::class,'index'])->name('orders.index'); Route::get('orders/{order}',[AdminOrderController::class,'show'])->name('orders.show'); Route::patch('orders/{order}',[AdminOrderController::class,'update'])->name('orders.update'); Route::resource('projects',AdminProjectController::class)->except('show'); Route::resource('coupons',AdminCouponController::class)->except('show'); Route::resource('discount-rules',AdminDiscountRuleController::class)->except('show'); Route::get('media',[AdminMediaController::class,'index'])->name('media.index'); Route::post('media',[AdminMediaController::class,'store'])->name('media.store'); Route::delete('media/{medium}',[AdminMediaController::class,'destroy'])->name('media.destroy'); Route::get('menus',[AdminMenuItemController::class,'index'])->name('menus.index'); Route::post('menus',[AdminMenuItemController::class,'store'])->name('menus.store'); Route::patch('menus/{menu}',[AdminMenuItemController::class,'update'])->name('menus.update'); Route::delete('menus/{menu}',[AdminMenuItemController::class,'destroy'])->name('menus.destroy'); Route::get('settings',[AdminSettingController::class,'edit'])->name('settings.edit'); Route::put('settings',[AdminSettingController::class,'update'])->name('settings.update'); Route::get('users',[AdminUserController::class,'index'])->name('users.index'); Route::post('users',[AdminUserController::class,'store'])->name('users.store'); Route::patch('users/{user}',[AdminUserController::class,'update'])->name('users.update'); Route::get('roles',[AdminRoleController::class,'index'])->name('roles.index'); Route::post('roles',[AdminRoleController::class,'store'])->name('roles.store'); Route::patch('roles/{role}',[AdminRoleController::class,'update'])->name('roles.update'); Route::delete('roles/{role}',[AdminRoleController::class,'destroy'])->name('roles.destroy'); Route::get('reports',[AdminReportController::class,'index'])->name('reports.index'); }); });
+
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CouponController as AdminCouponController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DiscountRuleController as AdminDiscountRuleController;
+use App\Http\Controllers\Admin\MediaController as AdminMediaController;
+use App\Http\Controllers\Admin\MenuItemController as AdminMenuItemController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Admin\RoleController as AdminRoleController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\EngagementController;
+use App\Http\Controllers\FontController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SitemapController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/fonts/BYekan.woff2',[FontController::class,'byekan'])->name('font.byekan');
+Route::get('/sitemap.xml',SitemapController::class)->name('sitemap');
+Route::get('/',[HomeController::class,'index'])->name('home');
+Route::get('/shop',[CatalogController::class,'index'])->name('catalog.index');
+Route::get('/product/{product:slug}',[CatalogController::class,'show'])->name('products.show');
+Route::get('/projects',[ProjectController::class,'index'])->name('projects.index');
+Route::get('/projects/{project:slug}',[ProjectController::class,'show'])->name('projects.show');
+
+Route::get('/wishlist',[EngagementController::class,'wishlist'])->name('wishlist.index');
+Route::post('/wishlist/{product}',[EngagementController::class,'toggleWishlist'])->name('wishlist.toggle');
+Route::get('/compare',[EngagementController::class,'compare'])->name('compare.index');
+Route::post('/compare/{product}',[EngagementController::class,'toggleCompare'])->name('compare.toggle');
+
+Route::get('/cart',[CartController::class,'index'])->name('cart.index');
+Route::post('/cart/{product}',[CartController::class,'store'])->name('cart.store');
+Route::patch('/cart/{product}',[CartController::class,'update'])->name('cart.update');
+Route::delete('/cart/{product}',[CartController::class,'destroy'])->name('cart.destroy');
+Route::post('/cart/coupon',[CartController::class,'coupon'])->name('cart.coupon');
+Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout.index');
+Route::post('/checkout',[CheckoutController::class,'store'])->name('checkout.store');
+Route::get('/payment/zarinpal/callback',PaymentController::class)->name('payment.zarinpal.callback');
+
+Route::prefix('admin')->name('admin.')->group(function():void {
+    Route::get('/login',[AdminAuthController::class,'create'])->name('login');
+    Route::post('/login',[AdminAuthController::class,'store'])->name('login.store');
+    Route::post('/logout',[AdminAuthController::class,'destroy'])->name('logout');
+    Route::middleware('admin')->group(function():void {
+        Route::get('/',[DashboardController::class,'index'])->name('dashboard');
+        Route::resource('products',AdminProductController::class)->except('show');
+        Route::resource('categories',AdminCategoryController::class)->except('show');
+        Route::get('orders',[AdminOrderController::class,'index'])->name('orders.index');
+        Route::get('orders/{order}',[AdminOrderController::class,'show'])->name('orders.show');
+        Route::patch('orders/{order}',[AdminOrderController::class,'update'])->name('orders.update');
+        Route::resource('projects',AdminProjectController::class)->except('show');
+        Route::resource('coupons',AdminCouponController::class)->except('show');
+        Route::resource('discount-rules',AdminDiscountRuleController::class)->except('show');
+        Route::get('media',[AdminMediaController::class,'index'])->name('media.index');
+        Route::post('media',[AdminMediaController::class,'store'])->name('media.store');
+        Route::delete('media/{medium}',[AdminMediaController::class,'destroy'])->name('media.destroy');
+        Route::get('menus',[AdminMenuItemController::class,'index'])->name('menus.index');
+        Route::post('menus',[AdminMenuItemController::class,'store'])->name('menus.store');
+        Route::patch('menus/{menu}',[AdminMenuItemController::class,'update'])->name('menus.update');
+        Route::delete('menus/{menu}',[AdminMenuItemController::class,'destroy'])->name('menus.destroy');
+        Route::get('settings',[AdminSettingController::class,'edit'])->name('settings.edit');
+        Route::put('settings',[AdminSettingController::class,'update'])->name('settings.update');
+        Route::get('users',[AdminUserController::class,'index'])->name('users.index');
+        Route::post('users',[AdminUserController::class,'store'])->name('users.store');
+        Route::patch('users/{user}',[AdminUserController::class,'update'])->name('users.update');
+        Route::get('roles',[AdminRoleController::class,'index'])->name('roles.index');
+        Route::post('roles',[AdminRoleController::class,'store'])->name('roles.store');
+        Route::patch('roles/{role}',[AdminRoleController::class,'update'])->name('roles.update');
+        Route::delete('roles/{role}',[AdminRoleController::class,'destroy'])->name('roles.destroy');
+        Route::get('reports',[AdminReportController::class,'index'])->name('reports.index');
+    });
+});
