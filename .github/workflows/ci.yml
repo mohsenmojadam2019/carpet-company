@@ -1,72 +1,45 @@
 name: Laravel CI
-
 on:
   push:
-    branches:
-      - main
-      - feat/luxury-carpet-commerce
+    branches: [main, feat/luxury-carpet-commerce]
   pull_request:
-    branches:
-      - main
-
+    branches: [main]
 permissions:
   contents: read
-
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    timeout-minutes: 12
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Setup PHP 8.4
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, dom, fileinfo, sqlite3, pdo_sqlite
+          extensions: mbstring, dom, fileinfo, exif, gd, sqlite3, pdo_sqlite
           coverage: none
-
-      - name: Cache Composer packages
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         with:
           path: vendor
           key: ${{ runner.os }}-php84-${{ hashFiles('composer.lock', 'composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-php84-
-
+          restore-keys: ${{ runner.os }}-php84-
       - name: Install dependencies
-        shell: bash
-        run: |
-          set -o pipefail
-          composer install --no-interaction --prefer-dist --no-progress 2>&1 | tee composer-install.log
-
-      - name: Upload Composer diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: composer-diagnostics
-          path: composer-install.log
-          if-no-files-found: ignore
-          retention-days: 1
-
+        run: composer install --no-interaction --prefer-dist --no-progress
       - name: Prepare environment
         run: |
           cp .env.example .env
-          mkdir -p database storage/framework/{cache,sessions,views} storage/logs bootstrap/cache
+          mkdir -p database storage/app/public storage/framework/{cache,sessions,views} storage/logs bootstrap/cache
           touch database/database.sqlite
           php artisan key:generate --force
-
-      - name: Validate application boot
+      - name: Validate application
         run: |
           php artisan about
           php artisan route:list
           php artisan migrate --force
           php artisan db:seed --force
+          php artisan storage:link || true
           php artisan config:cache
           php artisan route:cache
           php artisan view:cache
-
       - name: Run tests
         run: php artisan test --without-tty
