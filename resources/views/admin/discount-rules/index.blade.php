@@ -1,0 +1,8 @@
+@extends('layouts.admin')
+@section('title','قوانین تخفیف | مدیریت')
+@section('content')
+<div class="admin-top"><div><h1>قوانین تخفیف</h1><div class="muted">تخفیف خودکار بر اساس محصول، دسته یا کل فروشگاه</div></div>@can('discounts.manage')<a class="admin-btn" href="{{ route('admin.discount-rules.create') }}">+ قانون جدید</a>@endcan</div>
+<div class="admin-card"><div style="overflow:auto"><table class="admin-table"><thead><tr><th>نام</th><th>دامنه</th><th>نوع</th><th>مقدار</th><th>اولویت</th><th>اعتبار</th><th>وضعیت</th><th></th></tr></thead><tbody>
+@forelse($rules as $rule)<tr><td><b>{{ $rule->name }}</b></td><td>{{ ['all'=>'کل فروشگاه','product'=>'محصول','category'=>'دسته'][$rule->scope] ?? $rule->scope }}</td><td>{{ $rule->type==='percent'?'درصدی':'ثابت' }}</td><td>{{ $rule->type==='percent'?$rule->value.'٪':number_format($rule->value).' تومان' }}</td><td>{{ $rule->priority }}</td><td class="muted">{{ $rule->starts_at?->format('Y-m-d') ?: '—' }} تا {{ $rule->ends_at?->format('Y-m-d') ?: '—' }}</td><td><span class="badge {{ $rule->is_active?'ok':'' }}">{{ $rule->is_active?'فعال':'غیرفعال' }}</span></td><td>@can('discounts.manage')<div class="admin-actions"><a class="admin-btn alt" href="{{ route('admin.discount-rules.edit',$rule) }}">ویرایش</a><form method="post" action="{{ route('admin.discount-rules.destroy',$rule) }}" onsubmit="return confirm('حذف شود؟')">@csrf @method('DELETE')<button class="admin-btn alt">حذف</button></form></div>@endcan</td></tr>@empty<tr><td colspan="8">قانونی ثبت نشده است.</td></tr>@endforelse
+</tbody></table></div><div style="margin-top:16px">{{ $rules->links() }}</div></div>
+@endsection
