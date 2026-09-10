@@ -1,0 +1,9 @@
+@extends('layouts.admin')
+@section('title','تنظیمات فروشگاه | مدیریت')
+@section('content')
+<div class="admin-top"><div><h1>تنظیمات فروشگاه</h1><div class="muted">برند، تماس، ارسال و SEO پیش‌فرض</div></div></div>
+<form class="admin-grid" method="post" action="{{ route('admin.settings.update') }}">@csrf @method('PUT')
+<div class="admin-card admin-grid admin-grid-2"><div class="admin-field"><label>نام فروشگاه</label><input name="store_name" required value="{{ old('store_name',$settings['store_name']??'خانه فرش') }}"></div><div class="admin-field"><label>شعار برند</label><input name="store_tagline" value="{{ old('store_tagline',$settings['store_tagline']??'') }}"></div><div class="admin-field"><label>تلفن</label><input class="ltr" name="store_phone" value="{{ old('store_phone',$settings['store_phone']??'') }}"></div><div class="admin-field"><label>Instagram URL</label><input class="ltr" type="url" name="instagram_url" value="{{ old('instagram_url',$settings['instagram_url']??'') }}"></div><div class="admin-field" style="grid-column:1/-1"><label>آدرس</label><textarea rows="3" name="store_address">{{ old('store_address',$settings['store_address']??'') }}</textarea></div><div class="admin-field"><label>هزینه ثابت ارسال (تومان)</label><input type="number" min="0" name="shipping_flat" value="{{ old('shipping_flat',$settings['shipping_flat']??0) }}"></div></div>
+<div class="admin-card admin-grid admin-grid-2"><div class="admin-field"><label>SEO Title پیش‌فرض</label><input name="seo_default_title" maxlength="190" value="{{ old('seo_default_title',$settings['seo_default_title']??'') }}"></div><div class="admin-field"><label>SEO Description پیش‌فرض</label><textarea rows="4" maxlength="320" name="seo_default_description">{{ old('seo_default_description',$settings['seo_default_description']??'') }}</textarea></div></div>
+@can('settings.manage')<div><button class="admin-btn gold">ذخیره تنظیمات</button></div>@endcan</form>
+@endsection
