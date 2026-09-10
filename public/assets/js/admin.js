@@ -1,0 +1,1 @@
+(()=>{const body=document.body;document.querySelectorAll('[data-admin-open]').forEach(b=>b.addEventListener('click',()=>body.classList.add('nav-open')));document.querySelectorAll('[data-admin-close]').forEach(b=>b.addEventListener('click',()=>body.classList.remove('nav-open')));document.addEventListener('keydown',e=>{if(e.key==='Escape')body.classList.remove('nav-open')});})();
