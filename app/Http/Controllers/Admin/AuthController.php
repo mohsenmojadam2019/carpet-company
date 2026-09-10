@@ -11,28 +11,17 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    public function create(): View
-    {
-        return view('admin.login');
-    }
+    public function create(): View { return view('admin.login'); }
 
     public function store(Request $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
-        ]);
-
-        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
-            throw ValidationException::withMessages(['email' => 'ایمیل یا رمز عبور صحیح نیست.']);
-        }
-
+        $credentials = $request->validate(['email'=>['required','email'],'password'=>['required','string']]);
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) throw ValidationException::withMessages(['email' => 'ایمیل یا رمز عبور صحیح نیست.']);
         $request->session()->regenerate();
-        if (!$request->user()?->is_admin) {
+        if (!$request->user()?->can('admin.access')) {
             Auth::logout();
             throw ValidationException::withMessages(['email' => 'این حساب دسترسی مدیریت ندارد.']);
         }
-
         return redirect()->intended(route('admin.dashboard'));
     }
 

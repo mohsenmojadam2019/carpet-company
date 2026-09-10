@@ -10,10 +10,9 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || !$request->user()->is_admin) {
-            return redirect()->route('admin.login');
+        if (!$request->user() || !$request->user()->can('admin.access')) {
+            return $request->expectsJson() ? response()->json(['message' => 'Forbidden'], 403) : redirect()->route('admin.login');
         }
-
         return $next($request);
     }
 }
