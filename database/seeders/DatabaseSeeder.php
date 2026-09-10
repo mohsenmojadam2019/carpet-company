@@ -20,13 +20,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
-        $permissions = ['admin.access','products.view','products.manage','categories.view','categories.manage','orders.view','orders.manage','projects.view','projects.manage','discounts.view','discounts.manage','media.view','media.manage','users.view','users.manage','settings.view','settings.manage','menus.view','menus.manage','reports.view'];
+        $permissions = ['admin.access','products.view','products.manage','categories.view','categories.manage','orders.view','orders.manage','customers.view','projects.view','projects.manage','discounts.view','discounts.manage','media.view','media.manage','users.view','users.manage','settings.view','settings.manage','menus.view','menus.manage','reports.view'];
         foreach ($permissions as $permission) Permission::findOrCreate($permission, 'web');
 
         $superAdmin = Role::findOrCreate('super-admin', 'web');
         $superAdmin->syncPermissions(Permission::all());
         $manager = Role::findOrCreate('manager', 'web');
-        $manager->syncPermissions(['admin.access','products.view','products.manage','categories.view','categories.manage','orders.view','orders.manage','projects.view','projects.manage','discounts.view','discounts.manage','media.view','media.manage','settings.view','settings.manage','menus.view','menus.manage','reports.view']);
+        $manager->syncPermissions(['admin.access','products.view','products.manage','categories.view','categories.manage','orders.view','orders.manage','customers.view','projects.view','projects.manage','discounts.view','discounts.manage','media.view','media.manage','settings.view','settings.manage','menus.view','menus.manage','reports.view']);
         $editor = Role::findOrCreate('editor', 'web');
         $editor->syncPermissions(['admin.access','products.view','products.manage','categories.view','categories.manage','projects.view','projects.manage','media.view','media.manage']);
 
@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
         Coupon::updateOrCreate(['code'=>'WELCOME10'], ['type'=>'percent','value'=>10,'min_order'=>10000000,'max_discount'=>5000000,'usage_limit'=>200,'used_count'=>0,'starts_at'=>now()->subDay(),'ends_at'=>now()->addMonths(3),'is_active'=>true]);
         foreach ([['title'=>'ویلای روشن لواسان','slug'=>'lavasan-light-villa','location'=>'لواسان','excerpt'=>'پالت کرم و خاکی با قالی مرکزی در نشیمن اصلی.'],['title'=>'سوئیت بوتیک تهران','slug'=>'tehran-boutique-suite','location'=>'تهران','excerpt'=>'بافت مینیمال برای فضای جمع‌وجور و نور طبیعی.'],['title'=>'لابی اقامتگاه کویر','slug'=>'desert-residence-lobby','location'=>'یزد','excerpt'=>'ترکیب قالی ایرانی با خطوط معماری معاصر.']] as $project) Project::updateOrCreate(['slug'=>$project['slug']], $project + ['year'=>(int) now()->year,'is_featured'=>true,'is_active'=>true]);
 
-        foreach (['store_name'=>['خانه فرش','general'],'store_tagline'=>['فرش برای معماری ماندگار','general'],'store_phone'=>['','general'],'store_address'=>['','general'],'instagram_url'=>['','general'],'seo_default_title'=>['خانه فرش | خرید قالی، فرش و موکت','seo'],'seo_default_description'=>['فروشگاه تخصصی قالی، فرش، تابلو فرش، موکت و فرشینه با انتخاب حرفه‌ای و پرداخت امن.','seo'],'shipping_flat'=>['0','general']] as $key => [$value,$group]) Setting::put($key, $value, $group, $key==='shipping_flat' ? 'integer' : 'string');
+        foreach (['store_name'=>['خانه فرش','general'],'store_tagline'=>['فرش برای معماری ماندگار','general'],'store_phone'=>['','general'],'store_address'=>['','general'],'instagram_url'=>['','general'],'seo_default_title'=>['خانه فرش | خرید قالی، فرش و موکت','seo'],'seo_default_description'=>['فروشگاه تخصصی قالی، فرش، تابلو فرش، موکت و فرشینه با انتخاب حرفه‌ای و پرداخت امن.','seo'],'shipping_flat'=>['0','general'],'zarinpal_sandbox'=>['1','payments'],'kavenegar_sender'=>['','notifications'],'kavenegar_verify_template'=>['','notifications']] as $key => [$value,$group]) Setting::put($key,$value,$group,$key==='shipping_flat'?'integer':($key==='zarinpal_sandbox'?'boolean':'string'),!in_array($group,['payments','notifications'],true));
 
         $shop = MenuItem::updateOrCreate(['label'=>'فروشگاه','parent_id'=>null], ['route_name'=>'catalog.index','column'=>1,'sort_order'=>1,'is_active'=>true]);
         foreach ($categories->values() as $i => $category) MenuItem::updateOrCreate(['label'=>$category->name,'parent_id'=>$shop->id], ['url'=>'/shop?category='.$category->slug,'column'=>1+intdiv($i,3),'sort_order'=>$i+1,'is_active'=>true]);
