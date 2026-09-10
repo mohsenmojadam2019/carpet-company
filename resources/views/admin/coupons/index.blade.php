@@ -1,0 +1,8 @@
+@extends('layouts.admin')
+@section('title','کدهای تخفیف | مدیریت')
+@section('content')
+<div class="admin-top"><div><h1>کدهای تخفیف</h1><div class="muted">کوپن‌های درصدی و مبلغ ثابت</div></div>@can('discounts.manage')<a class="admin-btn" href="{{ route('admin.coupons.create') }}">+ کد جدید</a>@endcan</div>
+<div class="admin-card"><div style="overflow:auto"><table class="admin-table"><thead><tr><th>کد</th><th>نوع</th><th>مقدار</th><th>حداقل خرید</th><th>مصرف</th><th>بازه</th><th>وضعیت</th><th></th></tr></thead><tbody>
+@forelse($coupons as $coupon)<tr><td><b class="ltr">{{ $coupon->code }}</b></td><td>{{ $coupon->type==='percent'?'درصدی':'مبلغ ثابت' }}</td><td>{{ $coupon->type==='percent'?$coupon->value.'٪':number_format($coupon->value).' تومان' }}</td><td>{{ number_format($coupon->min_order) }}</td><td>{{ $coupon->used_count }} / {{ $coupon->usage_limit ?: '∞' }}</td><td class="muted">{{ $coupon->starts_at?->format('Y-m-d') ?: '—' }} تا {{ $coupon->ends_at?->format('Y-m-d') ?: '—' }}</td><td><span class="badge {{ $coupon->is_active?'ok':'' }}">{{ $coupon->is_active?'فعال':'غیرفعال' }}</span></td><td>@can('discounts.manage')<div class="admin-actions"><a class="admin-btn alt" href="{{ route('admin.coupons.edit',$coupon) }}">ویرایش</a><form method="post" action="{{ route('admin.coupons.destroy',$coupon) }}" onsubmit="return confirm('حذف شود؟')">@csrf @method('DELETE')<button class="admin-btn alt">حذف</button></form></div>@endcan</td></tr>@empty<tr><td colspan="8">کدی ثبت نشده است.</td></tr>@endforelse
+</tbody></table></div><div style="margin-top:16px">{{ $coupons->links() }}</div></div>
+@endsection
