@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 
 class Setting extends Model
 {
@@ -19,6 +20,7 @@ class Setting extends Model
                 'boolean' => filter_var($setting->value, FILTER_VALIDATE_BOOL),
                 'integer' => (int) $setting->value,
                 'json' => json_decode((string) $setting->value, true) ?: [],
+                'encrypted' => $setting->value ? Crypt::decryptString((string) $setting->value) : '',
                 default => $setting->value,
             };
         });
@@ -26,7 +28,12 @@ class Setting extends Model
 
     public static function put(string $key, mixed $value, string $group = 'general', string $type = 'string', bool $public = true): void
     {
-        $stored = $type === 'json' ? json_encode($value, JSON_UNESCAPED_UNICODE) : (string) $value;
+        $stored = match ($type) {
+            'json' => json_encode($value, JSON_UNESCAPED_UNICODE),
+            'encrypted' => $value === null || $value === '' ? '' : Crypt::encryptString((string) $value),
+            'boolean' => filter_var($value, FILTER_VALIDATE_BOOL) ? '1' : '0',
+            default => (string) $value,
+        };
         static::query()->updateOrCreate(['key'=>$key], ['group'=>$group,'value'=>$stored,'type'=>$type,'is_public'=>$public]);
         Cache::forget("setting:{$key}");
     }
