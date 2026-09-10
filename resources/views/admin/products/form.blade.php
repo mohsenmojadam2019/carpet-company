@@ -1,0 +1,21 @@
+@extends('layouts.admin')
+@section('title',($product->exists?'ویرایش':'محصول جدید').' | مدیریت')
+@section('content')
+<div class="admin-top"><div><h1>{{ $product->exists?'ویرایش محصول':'محصول جدید' }}</h1><div class="muted">اطلاعات فروش، موجودی، SEO و گالری</div></div><a class="admin-btn alt" href="{{ route('admin.products.index') }}">بازگشت</a></div>
+<form class="admin-grid" method="post" enctype="multipart/form-data" action="{{ $product->exists?route('admin.products.update',$product):route('admin.products.store') }}">@csrf @if($product->exists)@method('PUT')@endif
+<div class="admin-card admin-grid admin-grid-2">
+<div class="admin-field"><label>نام محصول</label><input name="name" value="{{ old('name',$product->name) }}" required></div><div class="admin-field"><label>SKU</label><input class="ltr" name="sku" value="{{ old('sku',$product->sku) }}" required></div>
+<div class="admin-field"><label>دسته‌بندی</label><select name="category_id" required>@foreach($categories as $c)<option value="{{ $c->id }}" @selected((string)old('category_id',$product->category_id)===(string)$c->id)>{{ $c->name }}</option>@endforeach</select></div><div class="admin-field"><label>Slug</label><input class="ltr" name="slug" value="{{ old('slug',$product->slug) }}"></div>
+<div class="admin-field"><label>قیمت (تومان)</label><input type="number" name="price" value="{{ old('price',$product->price) }}" min="0" required></div><div class="admin-field"><label>قیمت فروش ویژه</label><input type="number" name="sale_price" value="{{ old('sale_price',$product->sale_price) }}" min="0"></div>
+<div class="admin-field"><label>موجودی</label><input type="number" name="stock" value="{{ old('stock',$product->stock??0) }}" min="0" required></div><div class="admin-field"><label>رنگ‌ها (با کاما)</label><input name="colors_text" value="{{ old('colors_text',implode(', ',(array)$product->colors)) }}"></div>
+<div class="admin-field"><label>عرض سانتی‌متر</label><input type="number" step=".01" name="width" value="{{ old('width',$product->width) }}"></div><div class="admin-field"><label>ارتفاع سانتی‌متر</label><input type="number" step=".01" name="height" value="{{ old('height',$product->height) }}"></div>
+<div class="admin-field"><label>جنس</label><input name="material" value="{{ old('material',$product->material) }}"></div><div class="admin-field"><label>بافت</label><input name="weave" value="{{ old('weave',$product->weave) }}"></div>
+<div class="admin-field"><label>تراکم</label><input name="density" value="{{ old('density',$product->density) }}"></div><div class="admin-field"><label>مبدأ</label><input name="origin" value="{{ old('origin',$product->origin) }}"></div>
+<div class="admin-field" style="grid-column:1/-1"><label>توضیح کوتاه</label><textarea rows="2" name="short_description">{{ old('short_description',$product->short_description) }}</textarea></div><div class="admin-field" style="grid-column:1/-1"><label>توضیحات کامل</label><textarea rows="7" name="description">{{ old('description',$product->description) }}</textarea></div>
+<label><input type="checkbox" name="featured" value="1" @checked(old('featured',$product->featured))> محصول ویژه</label><label><input type="checkbox" name="is_active" value="1" @checked(old('is_active',$product->exists?$product->is_active:true))> فعال</label>
+</div>
+<div class="admin-card"><h3>تصاویر — Spatie Media Library</h3><div class="admin-field"><label>افزودن تصاویر جدید (حداکثر ۱۲ فایل)</label><input type="file" name="gallery[]" multiple accept="image/jpeg,image/png,image/webp"></div>
+@if($product->exists && $product->media->isNotEmpty())<div class="media-grid" style="margin-top:16px">@foreach($product->getMedia('gallery') as $m)<label class="media-card"><img src="{{ $m->getUrl() }}" alt=""><div class="meta"><input type="checkbox" name="remove_media[]" value="{{ $m->id }}"> حذف {{ $m->file_name }}</div></label>@endforeach</div>@endif</div>
+<div class="admin-card admin-grid admin-grid-2"><div class="admin-field"><label>Meta title</label><input name="meta_title" value="{{ old('meta_title',$product->meta_title) }}"></div><div class="admin-field"><label>Meta description</label><textarea rows="3" name="meta_description">{{ old('meta_description',$product->meta_description) }}</textarea></div></div>
+<div><button class="admin-btn gold" type="submit">ذخیره محصول</button></div></form>
+@endsection
