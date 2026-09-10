@@ -19,14 +19,13 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\EngagementController;
-use App\Http\Controllers\FontController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PublicOrderController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/fonts/BYekan.woff2',[FontController::class,'byekan'])->name('font.byekan');
 Route::get('/sitemap.xml',SitemapController::class)->name('sitemap');
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('/shop',[CatalogController::class,'index'])->name('catalog.index');
@@ -45,6 +44,8 @@ Route::post('/cart/coupon',[CartController::class,'coupon'])->name('cart.coupon'
 Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout.index');
 Route::post('/checkout',[CheckoutController::class,'store'])->name('checkout.store');
 Route::get('/payment/zarinpal/callback',PaymentController::class)->name('payment.zarinpal.callback');
+Route::get('/order/{order:public_token}',[PublicOrderController::class,'success'])->name('orders.success');
+Route::get('/invoice/{order:public_token}',[PublicOrderController::class,'invoice'])->name('orders.invoice');
 
 Route::prefix('admin')->name('admin.')->group(function():void {
     Route::get('/login',[AdminAuthController::class,'create'])->name('login');

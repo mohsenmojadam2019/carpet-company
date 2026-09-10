@@ -36,9 +36,10 @@ class CheckoutController extends Controller
             $order = DB::transaction(function () use ($validated, $summary): Order {
                 $order = Order::create([
                     'order_number'=>'CRP-'.now()->format('ymd').'-'.Str::upper(Str::random(6)),'customer_name'=>$validated['customer_name'],'phone'=>$validated['phone'],'email'=>$validated['email']??null,
-                    'status'=>'pending','payment_status'=>'pending','subtotal'=>$summary['subtotal'],'discount_amount'=>$summary['discount'],'shipping_amount'=>$summary['shipping'],'total'=>$summary['total'],'coupon_code'=>$summary['couponCode'],
+                    'status'=>'pending','payment_status'=>'pending','payment_gateway'=>'zarinpal','subtotal'=>$summary['subtotal'],'discount_amount'=>$summary['discount'],'shipping_amount'=>$summary['shipping'],'total'=>$summary['total'],'coupon_code'=>$summary['couponCode'],
                     'shipping_address'=>['province'=>$validated['province'],'city'=>$validated['city'],'address'=>$validated['address'],'postal_code'=>$validated['postal_code']??null],'notes'=>$validated['notes']??null,
                 ]);
+                $order->statusHistories()->create(['from_status'=>null,'to_status'=>'pending','note'=>'سفارش از فروشگاه آنلاین ایجاد شد.']);
                 foreach ($summary['items'] as $item) {
                     $product = Product::query()->lockForUpdate()->findOrFail($item['product']->id);
                     abort_if($product->stock < $item['quantity'], 422, 'موجودی یکی از محصولات تغییر کرده است.');
@@ -46,6 +47,7 @@ class CheckoutController extends Controller
                 }
                 return $order;
             });
+
             $payment = $gateway->request($order);
             $order->update(['payment_authority'=>$payment['authority']]);
             $request->session()->put('pending_order_id',$order->id);
