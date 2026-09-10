@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -73,8 +74,13 @@ class AdminCmsTest extends TestCase
         $this->get(route('projects.index'))->assertOk();
         $this->get(route('wishlist.index'))->assertOk();
         $this->get(route('compare.index'))->assertOk();
+
+        $this->withoutMiddleware(ValidateCsrfToken::class);
         $this->post(route('wishlist.toggle',$product))->assertRedirect();
         $this->post(route('compare.toggle',$product))->assertRedirect();
+        $this->assertContains($product->id,session('wishlist',[]));
+        $this->assertContains($product->id,session('compare',[]));
+
         $this->get(route('sitemap'))->assertOk()->assertHeader('Content-Type','application/xml');
     }
 }
