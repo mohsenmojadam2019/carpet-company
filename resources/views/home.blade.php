@@ -46,12 +46,14 @@
         <div class="experience-copy reveal">
             <span class="eyebrow">SIGNATURE INTERACTION</span>
             <h2>گوشهٔ قالی را بگیر؛<br>طرح بعدی را کشف کن.</h2>
-            <p>به‌جای اسلایدرهای تکراری، خودِ قالی تبدیل به رابط کاربری می‌شود. گوشه را بکشید تا بافت زیرین نمایان شود.</p>
+            <p>به‌جای اسلایدرهای تکراری، خودِ قالی تبدیل به رابط کاربری می‌شود. گوشه را بکشید؛ لبه با موج و عمق طبیعی بالا می‌آید و بافت زیرین آشکار می‌شود.</p>
             <a class="text-link" href="{{ route('catalog.index') }}">تجربه در صفحه محصول ←</a>
         </div>
-        <div class="rug-peel-stage reveal" data-rug-peel>
+        <div class="rug-peel-stage reveal" data-rug-peel-v2>
             <div class="rug-under pattern-3"><span>کالکشن دوم</span></div>
             <div class="rug-top pattern-1" data-rug-top><span>کالکشن اول</span></div>
+            <div class="rug-edge-shadow" data-rug-shadow aria-hidden="true"></div>
+            <div class="rug-fold" data-rug-fold aria-hidden="true"></div>
             <button type="button" class="rug-handle" data-rug-handle aria-label="کشیدن گوشه قالی"><b>↙</b><small>بکشید</small></button>
         </div>
     </div>
@@ -98,6 +100,8 @@
 </section>
 @endsection
 
+@push('head')<link rel="stylesheet" href="{{ asset('assets/css/rug-peel.css') }}">@endpush
+@push('scripts')<script src="{{ asset('assets/js/rug-peel.js') }}" defer></script>@endpush
 @push('structured-data')
 <script type="application/ld+json">{!! json_encode(['@context'=>'https://schema.org','@type'=>'Store','name'=>config('store.brand'),'url'=>url('/'),'telephone'=>config('store.phone'),'priceRange'=>'$$$'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}</script>
 @endpush
