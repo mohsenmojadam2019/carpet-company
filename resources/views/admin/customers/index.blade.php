@@ -1,0 +1,6 @@
+@extends('layouts.admin')
+@section('title','مشتریان | مدیریت')
+@section('content')
+<div class="admin-top"><div><h1>مشتریان</h1><div class="muted">CRM سبک بر اساس سابقه سفارش‌ها</div></div></div>
+<div class="admin-card"><form method="get" class="admin-actions" style="margin-bottom:16px"><div class="admin-field" style="min-width:320px"><label>جست‌وجو</label><input name="q" value="{{ request('q') }}" placeholder="نام، موبایل یا ایمیل"></div><button class="admin-btn alt" style="align-self:end">جست‌وجو</button></form><div style="overflow:auto"><table class="admin-table"><thead><tr><th>مشتری</th><th>تماس</th><th>تعداد سفارش</th><th>خرید پرداخت‌شده</th><th>آخرین سفارش</th></tr></thead><tbody>@forelse($customers as $customer)<tr><td><b>{{ $customer->customer_name }}</b></td><td><div class="ltr">{{ $customer->phone }}</div><div class="muted ltr">{{ $customer->email ?: '—' }}</div></td><td>{{ number_format($customer->order_count) }}</td><td>{{ number_format($customer->total_spent) }} تومان</td><td class="ltr">{{ $customer->last_order_at }}</td></tr>@empty<tr><td colspan="5">مشتری یافت نشد.</td></tr>@endforelse</tbody></table></div><div style="margin-top:16px">{{ $customers->links() }}</div></div>
+@endsection
