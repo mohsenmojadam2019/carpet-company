@@ -30,7 +30,10 @@ class TestimonialsAndInquiriesTest extends TestCase
 
     public function test_contact_form_creates_trackable_inquiry(): void
     {
-        $response = $this->post(route('contact.store'), [
+        $token = 'contact-form-csrf-token';
+
+        $response = $this->withSession(['_token' => $token])->post(route('contact.store'), [
+            '_token' => $token,
             'name' => 'کاربر تست',
             'phone' => '09120000099',
             'email' => 'contact@example.test',
@@ -48,7 +51,10 @@ class TestimonialsAndInquiriesTest extends TestCase
 
     public function test_custom_order_form_creates_structured_request(): void
     {
-        $response = $this->post(route('custom-order.store'), [
+        $token = 'custom-order-csrf-token';
+
+        $response = $this->withSession(['_token' => $token])->post(route('custom-order.store'), [
+            '_token' => $token,
             'name' => 'مشتری سفارش اختصاصی',
             'phone' => '09121112222',
             'category' => 'قالی دستباف',
