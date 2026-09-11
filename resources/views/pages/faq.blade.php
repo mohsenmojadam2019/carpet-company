@@ -1,0 +1,8 @@
+@extends('layouts.app')
+@section('title','سوالات متداول | خانه فرش')
+@section('meta_description','پاسخ سوالات متداول درباره خرید فرش، پرداخت، ارسال، موجودی، سفارش اختصاصی و خدمات خانه فرش.')
+@section('content')
+<section class="page-hero"><div class="page-hero-inner"><div><div class="breadcrumbs"><a href="{{ route('home') }}">خانه</a> / سوالات متداول</div><span class="page-kicker">FAQ</span><h1>پاسخ کوتاه،<br>برای تصمیم مطمئن‌تر.</h1><p>پرسش‌های پرتکرار درباره محصول، ارسال، پرداخت و سفارش اختصاصی را اینجا می‌بینید.</p></div><div class="page-visual"><img src="{{ asset('assets/img/atelier.svg') }}" alt="راهنمای خرید فرش" loading="eager"></div></div></section>
+<section class="page-section"><div class="page-container"><div class="faq-list">@foreach([['چطور از اصالت و مشخصات محصول مطمئن شوم؟','مشخصات بافت، متریال، ابعاد، موجودی و اطلاعات محصول در صفحه کالا درج می‌شود و برای محصولات خاص امکان مشاوره پیش از خرید وجود دارد.'],['آیا امکان سفارش در ابعاد خاص وجود دارد؟','بله. از صفحه سفارش اختصاصی می‌توانید نوع محصول، ابعاد و بودجه را ثبت کنید تا کارشناسان مجموعه بررسی کنند.'],['پرداخت چگونه انجام می‌شود؟','پرداخت آنلاین از طریق زرین‌پال انجام می‌شود. در محیط دمو درگاه در حالت Sandbox قرار دارد.'],['ارسال محصولات چگونه است؟','ارسال با بسته‌بندی مناسب و متناسب با نوع محصول انجام می‌شود و وضعیت سفارش در سیستم قابل پیگیری است.'],['اگر برای انتخاب فرش مردد باشم چه کنم؟','می‌توانید از مشاوره انتخاب استفاده کنید و بر اساس نور، مبلمان، ابعاد و سبک فضا چند گزینه مناسب دریافت کنید.']] as $faq)<details class="faq-item"><summary>{{ $faq[0] }}</summary><p>{{ $faq[1] }}</p></details>@endforeach</div></div></section>
+@endsection
+@push('head')<link rel="stylesheet" href="{{ asset('assets/css/corporate-pages.css') }}">@endpush
