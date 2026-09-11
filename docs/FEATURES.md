@@ -2,6 +2,12 @@
 
 این سند قابلیت‌های پیاده‌سازی‌شده در شاخه `feat/luxury-carpet-commerce` را مستند می‌کند.
 
+## مرجع تصویری صفحه محصول
+
+![مرجع صفحه محصول و Room Preview](images/product-page-reference.webp)
+
+این تصویر مرجع صفحه محصول نهایی است و ترکیب گالری محصول، Rug Corner interaction، انتخاب سایز، متریال، موجودی، افزودن به سبد، Wishlist، خدمات تحویل و Room Preview را مشخص می‌کند.
+
 ## تجربه کاربری و رابط فروشگاه
 
 - رابط کاملاً RTL و فارسی با فونت BYekan WOFF2.
@@ -22,6 +28,9 @@
 - Pagination کاتالوگ.
 - صفحه محصول با نام، SKU، قیمت، قیمت نهایی، موجودی، ابعاد، متریال، نوع بافت، تراکم و مبدأ.
 - گالری محصول از Spatie Media Library با fallback به تصاویر legacy.
+- انتخاب و نمایش گزینه‌های سایز/ابعاد و اطلاعات متریال در Product UI.
+- Room Preview برای نمایش فرش در فضای واقعی/دکوراسیون.
+- وضعیت موجودی و Delivery & Services در صفحه محصول.
 - محصولات مرتبط بر اساس دسته‌بندی.
 - Wishlist مبتنی بر Session.
 - Compare مبتنی بر Session تا ۴ محصول.
@@ -185,7 +194,3 @@
 - اعتبارسنجی فایل BYekan WOFF2 از filesystem.
 - E2E با HTTP Fake: Checkout → Zarinpal request → Callback → Verify → Stock → Coupon → Invoice → Admin status transition.
 - در CI هیچ پرداخت واقعی و هیچ SMS واقعی انجام نمی‌شود.
-
-## تصویر مرجع تجربه محصول
-
-تصویر طراحی صفحه محصول در `docs/images/product-page-concept.svg` قرار دارد و در README نمایش داده می‌شود. این طرح مرجع بخش Product Experience و تعامل بلندشدن گوشه فرش است.

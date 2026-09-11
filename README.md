@@ -6,7 +6,9 @@ Luxury Persian carpet ecommerce, corporate presentation and project showcase bui
 
 ## Product Experience Concept
 
-![Product page concept with interactive rug corner and room preview](docs/images/product-page-concept.svg)
+![Product page reference](docs/images/product-page-reference.webp)
+
+تصویر بالا مرجع مستقیم طراحی صفحه محصول است: گالری اصلی، تعامل بلندشدن گوشه فرش، انتخاب سایز و متریال، وضعیت موجودی، CTA خرید، Wishlist و Room Preview. پیاده‌سازی تعاملی پروژه باید همین زبان بصری روشن، لوکس و مینیمال را حفظ کند.
 
 در تجربه محصول، گوشه فرش فقط یک تصویر تزئینی نیست. کاربر می‌تواند با Mouse، Touch یا Keyboard گوشه را بگیرد؛ لبه فرش با **موج نرم، Perspective، پشتِ تاخورده و سایه واقعی‌تر** بالا می‌آید، طرح زیرین نمایان می‌شود و پس از رها کردن با حرکت Spring برمی‌گردد.
 
