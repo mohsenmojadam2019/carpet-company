@@ -14,9 +14,10 @@ class StorefrontSmokeTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('خانه فرش')
-            ->assertSee('data-rug-peel-v2', false)
-            ->assertSee('assets/css/rug-peel.css', false)
-            ->assertSee('assets/js/rug-peel.js', false);
+            ->assertSee('data-room-selector', false)
+            ->assertSee('room-showcase-data', false)
+            ->assertSee('assets/css/room-showcase.css', false)
+            ->assertSee('assets/js/room-showcase.js', false);
     }
 
     public function test_catalog_page_is_rendered(): void
