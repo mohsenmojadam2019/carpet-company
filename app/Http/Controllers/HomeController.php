@@ -18,9 +18,7 @@ class HomeController extends Controller
             ->with(['products' => fn ($query) => $query
                 ->published()
                 ->orderByDesc('featured')
-                ->latest()
-                ->limit(8)])
-            ->limit(8)
+                ->latest()])
             ->get();
 
         return view('home', [
