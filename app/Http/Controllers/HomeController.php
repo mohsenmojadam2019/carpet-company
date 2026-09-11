@@ -11,10 +11,32 @@ class HomeController extends Controller
 {
     public function index(): View
     {
+        $categories = Category::query()
+            ->whereNull('parent_id')
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->with(['products' => fn ($query) => $query
+                ->published()
+                ->orderByDesc('featured')
+                ->latest()
+                ->limit(8)])
+            ->limit(8)
+            ->get();
+
         return view('home', [
-            'categories' => Category::query()->whereNull('parent_id')->where('is_active', true)->orderBy('sort_order')->limit(6)->get(),
-            'featuredProducts' => Product::query()->published()->featured()->with('category')->limit(8)->get(),
-            'projects' => Project::query()->where('is_active', true)->where('is_featured', true)->latest()->limit(4)->get(),
+            'categories' => $categories,
+            'featuredProducts' => Product::query()
+                ->published()
+                ->featured()
+                ->with('category')
+                ->limit(8)
+                ->get(),
+            'projects' => Project::query()
+                ->where('is_active', true)
+                ->where('is_featured', true)
+                ->latest()
+                ->limit(4)
+                ->get(),
         ]);
     }
 }
