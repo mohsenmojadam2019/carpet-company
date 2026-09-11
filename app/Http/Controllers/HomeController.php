@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Project;
+use App\Models\Testimonial;
 use Illuminate\Contracts\View\View;
 
 class HomeController extends Controller
@@ -34,6 +35,13 @@ class HomeController extends Controller
                 ->where('is_featured', true)
                 ->latest()
                 ->limit(4)
+                ->get(),
+            'testimonials' => Testimonial::query()
+                ->where('is_active', true)
+                ->orderByDesc('is_featured')
+                ->orderBy('sort_order')
+                ->latest()
+                ->limit(12)
                 ->get(),
         ]);
     }
